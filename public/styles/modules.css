@@ -1,0 +1,132 @@
+nav #menu {
+    display: none;
+}
+
+nav a,
+nav h2 {
+    color: white;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 20px;
+    display: block;
+}
+nav a{
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.726);
+}
+
+nav a.icon {
+    background: black;
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 20px;
+    height: 15px;
+}
+
+nav img {
+    width: 20px;
+    height: 15px;
+}
+
+nav a:hover {
+    background-color:lightgray;
+    color: black;
+}
+
+form div , #submit , #textbox , .update-form input , textarea , .buttons{
+    width: 300px;
+    height: 45px;
+    display: block;
+    margin: auto;
+    margin-top: 30px;
+    border-radius: 5px;
+    border: none;
+}
+
+#textbox{
+    color: black;
+    width: 294px;
+}
+
+.update-form{
+    display: block;
+    margin: auto;
+    margin-top: 50px;
+    width: 400px;
+    height: 50%;
+}
+
+.form-inputs{
+    background-color: lightgray;
+    line-height: 45px;
+    text-align: left;
+}
+
+.form-inputs label{
+    margin: 0 20px 0 30px;
+}
+
+#submit , .button , #update , .buttons{
+    background-color: black;
+    color: white;
+    margin-bottom: 20px;
+}
+
+#submit:hover , .button:hover , #update:hover , .buttons:hover{
+    background-color: rgb(0, 24, 5);
+    transition: ease-in;
+    transition-delay: 100ms;
+}
+
+.buttons{
+    width: 160px;
+}
+
+.book-results{
+    box-shadow: 0 0 10px black;
+}
+
+.book-results img {
+    width: 200px;
+}
+
+.book-results h3{
+    font-weight: 700;
+    font-size: x-large;
+    margin: 10px 0;
+}
+
+.book-results h4{
+    font-weight: 600;
+    font-size: large;
+}
+
+.book-results p{
+    overflow: hidden;
+    /* height: 20%; */
+    margin: 10px 0;
+
+}
+
+.button{
+    width: 200px;
+    padding: 14px;
+    margin: 10% 0 0 0;
+    border-radius: 5px;
+    border: none;
+}
+
+#four {
+    margin-top: 25%;
+    background-color: black;
+    font-size: 120px;
+    font-weight: 900;
+}
+
+#error{
+    color: white;
+    background-color: #440000;
+    font-size: 20px;
+}
