@@ -25,7 +25,7 @@ app.set('view engine', 'ejs');
 app.use(methodOverride('_method'));
 app.use(express.urlencoded({ extended: true }));
 
-// Resources directory
+// Enable the CSS
 app.use(express.static('public'));
 
 // Constructor
@@ -37,12 +37,6 @@ function Book(bookData) {
   this.isbn = `${bookData.industryIdentifiers[0].type} ${bookData.industryIdentifiers[0].identifier}` || 'ISBN not available';
   this.bookshelf = `${bookData.categories}` || 'Book to read';
 }
-
-// Listen
-client.connect().then(() => {
-  app.listen(PORT, () => console.log(`Listening on localhost: ${PORT}`));
-}).catch(() => console.log(`Could not connect to database`));
-
 
 // Routes
 app.get('/', bookShelfFunction);
@@ -62,13 +56,13 @@ function bookShelfFunction(request, response) {
   client.query(selectAll).then(bookData => {
     let books = bookData.rows.map((value) => value);
     const responseObject = { books: books };
-    response.status(200).render('./pages/index.ejs', responseObject);
+    response.status(200).render('./pages/index', responseObject);
   });
 }
 
 // /searches
 function searchFunction(request, response) {
-  response.status(200).render('./pages/searches/new.ejs');
+  response.status(200).render('./pages/searches/new');
 }
 function resultsFunction(request, response) {
   const url = `https://www.googleapis.com/books/v1/volumes?q=${request.body.property}:${request.body.search}&key=${GOOGLE_API_KEY}`;
@@ -76,24 +70,24 @@ function resultsFunction(request, response) {
   superagent.get(url).then(bookData => {
     // console.log(bookData.body);
     let books = bookData.body.items.map((value, index) => {
-      if (index < 10) {return (new Book(value.volumeInfo));}
+      if (index < 10) { return (new Book(value.volumeInfo)); }
     });
     console.log(books);
     const responseObject = { books: books };
-    response.status(200).render('./pages/searches/show.ejs', responseObject);
+    response.status(200).render('./pages/searches/show', responseObject);
   }).catch(console.error);
 }
 
 // /books
 function addBookFunction(request, response) {
   // console.log(request.body);
-  let newBook = request.body.bookData.split('+++');
+  let newBook = request.body.bookData;
   const search = 'SELECT * FROM books WHERE author=$1 AND title=$2 AND isbn=$3 AND image_url=$4 AND description=$5;';
   const select = 'SELECT * FROM books;';
   const insert = 'INSERT INTO books (author, title, isbn, image_url, description) VALUES($1,$2,$3,$4,$5);';
 
   client.query(search, newBook).then(bookData => {
-    let bookId = bookData.rows[0].id.toString();
+    let bookId = bookData.rows[0].id;
     console.log('already in database');
     response.redirect(`/books/${bookId}`);
   }).catch(() => {
@@ -101,7 +95,7 @@ function addBookFunction(request, response) {
     client.query(insert, newBook);
     client.query(select).then(bookData => {
       let i = Number(bookData.rows.length - 1);
-      let bookId = bookData.rows[i].id.toString();
+      let bookId = bookData.rows[i].id;
       response.redirect(`/books/${bookId}`);
     }).catch(console.error);
   });
@@ -111,7 +105,7 @@ function singleBookFunction(request, response) {
   const bookId = [request.params.id];
   client.query(select, bookId).then(bookData => {
     const responseObject = { books: bookData.rows };
-    response.render('pages/books/detail.ejs', responseObject);
+    response.render('pages/books/detail', responseObject);
   });
 }
 function readBookData(request, response) {
@@ -119,13 +113,13 @@ function readBookData(request, response) {
   const bookId = [request.params.id];
   client.query(select, bookId).then(bookData => {
     const responseObject = { books: bookData.rows };
-    response.render('pages/books/edit.ejs', responseObject);
+    response.render('pages/books/edit', responseObject);
   });
 }
 function updateBookForm(request, response) {
   const bookId = request.params.id.toString();
   const update = 'UPDATE books SET (author, title, isbn, image_url, description)=($1,$2,$3,$4,$5) WHERE id=$6;';
-  const updatedData = [request.body.author, request.body.title, request.body.isbn , request.body.image_url , request.body.description , bookId];
+  const updatedData = [request.body.author, request.body.title, request.body.isbn, request.body.image_url, request.body.description, bookId];
 
   client.query(update, updatedData).then(() => {
     response.redirect(`/books/${bookId}`);
@@ -144,6 +138,10 @@ function deleteBook(request, response) {
 
 // *
 function errorFunction(request, response) {
-  response.status(404).render('./pages/error.ejs');
+  response.status(404).render('./pages/error');
 }
 
+// Listen
+client.connect().then(() => {
+  app.listen(PORT, () => console.log(`You Successfully Connected To Port: ${PORT}`));
+}).catch(() => console.log(`Could not connect to database`));
